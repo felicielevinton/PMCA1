@@ -1,6 +1,6 @@
 # PMCA1
 Les données sur les sessions sont ici : https://docs.google.com/spreadsheets/d/1sFatSTXO0j3OONKstz7YN-mM04kNMjk_r7zo951yicU/edit?gid=871786168#gid=871786168
-Il y a les infos sur le nom de la session, le type de session 'type', si elle est utilisable ou non ('use') et des commentaires. 
+Dans la feuille 'HERCULE'. Il y a les infos sur le nom de la session, le type de session 'type', si elle est utilisable ou non ('use') et des commentaires. Les données sont dans data6/eTheremin/ 
 
 Si besoin des données brutes alors:
  - neural_data.npy : signal neural
