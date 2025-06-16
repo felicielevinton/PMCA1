@@ -22,3 +22,13 @@ C'est un dictionnaire de taille n_bins. A chaque bin, il contient les informatio
 
 good_clusters.npy contient les numéros des channels dans data qui ont passé le test statistique: donc ce sont ces channels qu'on garde pour les analyses. 
 
+les conditions sont:
+ - warmup (-1):c'est un block de tracking au début des sessions de block, qui dure 5min.
+ - tracking(0): quand on a la corrélation mouvement/fréquence
+ - playabck (1): on rejoue le son du tracking précédent. On distingue alors les 'Played_frequency' qui sont les fréquences jouées et les 'Mock_frequency' qui correspondent à celles qui sont couplées au mouvement de l'animal.
+
+   code couleur :
+   tracking : rouge
+   playback : noir
+   mapping change : violet
+
