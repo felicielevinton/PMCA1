@@ -234,3 +234,91 @@ def get_better_plot_geometry(good_clusters):
     num_cols = int(np.ceil(np.sqrt(num_plots)))
     num_rows = int(np.ceil(num_plots / num_cols))
     return num_plots, num_rows, num_cols
+
+
+
+
+
+
+
+# Positions functions :
+
+
+
+def find_movement(all_pos, integWin = 15,pauseBeforeMovement = 100,  threshold = 2, sweepRefractoryPeriod = 300,preSweepPeriod = 150 ):
+    """
+    une fonction appelée dans get_positions pour obtenir la vitesse
+    Sert aussi pour essayer de détecter des onsets de grands mouvements
+    """
+    # Calcul des différences
+    datadiff = np.diff(all_pos)
+    changeIdx = np.where(datadiff != 0)[0]
+
+    # Intégration sur les changements précédents
+    integPos = np.zeros(len(all_pos))
+    for changeNum in range(integWin, len(changeIdx)):
+        idx = changeIdx[changeNum]
+        window = changeIdx[changeNum - integWin : changeNum + 1]
+        integPos[idx] = np.sum(datadiff[window - 1])  # -1 car datadiff est plus court que data
+
+    # Détection des pics dépassant le seuil
+    threshIdx = []
+    for signC in [-1, 1]:
+        integPos_T = signC * integPos
+        threshIdx_T = np.where(integPos_T > threshold)[0].astype(float)  # permet les NaN
+
+        # Vérification de pic local
+        for i in range(len(threshIdx_T)):
+            idx = int(threshIdx_T[i])
+            start = int(max(0, idx - sweepRefractoryPeriod))
+            end = int(min(len(integPos_T), idx + sweepRefractoryPeriod + 1))
+            if np.any(integPos_T[start:end] > integPos_T[idx]):
+                threshIdx_T[i] = np.nan
+
+        threshIdx.extend(threshIdx_T)
+
+    # Nettoyage des indices
+    threshIdx = np.array(threshIdx)
+    threshIdx = threshIdx[~np.isnan(threshIdx)].astype(int)
+    threshIdx = np.sort(threshIdx)
+
+    # Détection des débuts de mouvement
+    onsetIdx = []
+    for threshNum in range(1, len(threshIdx)):
+        peakIdx = threshIdx[threshNum]
+        cursorBackInTime = peakIdx
+        while cursorBackInTime > threshIdx[threshNum - 1]:
+            start = max(0, cursorBackInTime - preSweepPeriod)
+            if np.all(all_pos[start:cursorBackInTime + 1] == all_pos[cursorBackInTime]):
+                onsetIdx.append((cursorBackInTime, peakIdx))
+                break
+            cursorBackInTime -= 1
+    return integPos, onsetIdx
+
+
+
+
+def get_positions(features, unique_tones):
+    """
+    input : dictionnaire features, le fichier unique_tones.npy de la session
+    output : 
+         - vecteur avec les positions en x pour chaque bin
+          - vecteur avec la vitesse à chaque bin
+    
+    """
+    pixels = np.linspace(0, 28, len(unique_tones))        # 28 cm
+    freq_to_pixel = {tone: pixel for tone, pixel in zip(unique_tones, pixels)}
+    
+        
+    frequency = []
+    for bin in features:
+        if bin['Condition']==0 or bin['Condition']==0:
+            frequency.append(bin['Played_frequency'])
+        else:
+            frequency.append(bin['Mock_frequency'])
+
+
+    pos = np.array([freq_to_pixel.get(f, np.nan) for f in frequency])
+    integ_pos, onset_idx = find_movement(pos, integWin = 15,pauseBeforeMovement = 100,  threshold = 1.5, sweepRefractoryPeriod = 300,preSweepPeriod = 150 )
+    return pos, integ_pos
+
