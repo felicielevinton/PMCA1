@@ -2,8 +2,11 @@
 Les données sur les sessions sont ici : https://docs.google.com/spreadsheets/d/1sFatSTXO0j3OONKstz7YN-mM04kNMjk_r7zo951yicU/edit?gid=871786168#gid=871786168
 Il y a les infos sur le nom de la session, le type de session 'type', si elle est utilisable ou non ('use') et des commentaires. 
 
+Si besoin des données brutes alors:
+ - neural_data.npy : signal neural
+ - tt.pkl : contient pour chaque trigger, la fréquence jouée, la condition, et le temps du trigger. (fs = 30kHz)
 
-Données neurales : 
+Données neurales binnées: 
  - fichier data_005.npy :  
 0.005 : taille des bins
 Ce fichier est de taille n_neurons x n_bins. Il comporte toujours les 32 canaux.
