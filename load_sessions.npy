@@ -32,7 +32,7 @@ print(df.head())
 
 root_directory = f'/auto/data6/eTheremin/{sheet_name}/'
 
-
+filtered_sessions = df[(df['use'] == 'yes') & (df['type'] == 'playback')]     # dans 'type' tu mets le style de sessions que tu veux regarder parmi : 'playback' et 'playback_block'
 sessions = filtered_sessions['session']
 sessions_type = filtered_sessions['type']
 
