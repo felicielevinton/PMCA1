@@ -1,0 +1,49 @@
+from kneed import DataGenerator, KneeLocator
+import matplotlib.pyplot as plt
+import pandas as pd
+import csv
+import os
+import scipy.io
+import json
+import numpy as np
+from format_data import *
+from utils import *
+import pickle as pkl
+from tonotopy import *
+
+import matplotlib.cm as cm
+
+t_pre = 0.2#0.2
+t_post = 0.30#0.300
+bin_width = 0.005
+# Créer les bins de temps"
+psth_bins = np.arange(-t_pre, t_post, bin_width)
+
+sheet_name = "HERCULE"  # Nom de la feuille
+headstage = 0
+
+sheet_id = "1sFatSTXO0j3OONKstz7YN-mM04kNMjk_r7zo951yicU"
+
+url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
+df = pd.read_csv(url)
+
+print(df.head())
+
+
+root_directory = f'/auto/data6/eTheremin/{sheet_name}/'
+
+
+sessions = filtered_sessions['session']
+sessions_type = filtered_sessions['type']
+
+for session, s_type in tqdm(zip(sessions, sessions_type), total=len(sessions), desc="Processing Sessions"):
+      folder = root_directory + session + '/'
+      path = folder + f'/headstage_{headstage}/'
+      print(path)
+
+      try: 
+          ############# blablabla####################
+      except Exception as e:
+            print(f"Error processing session {session}: {e}")
+            
+
