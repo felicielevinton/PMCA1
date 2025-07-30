@@ -4,5 +4,3 @@
 *.svg
 *.npy
 *.pkl
-/Scripts/Plots
-/Scripts/Save
